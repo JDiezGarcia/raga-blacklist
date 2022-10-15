@@ -1,0 +1,13 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "vscode-pets.petType": "dog",
+        "vscode-pets.petSize": "medium",
+        "vscode-pets.position": "explorer",
+        "vscode-pets.theme": "none"
+    }
+}
