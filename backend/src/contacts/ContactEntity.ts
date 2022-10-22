@@ -3,11 +3,15 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
-    UpdateDateColumn
+    UpdateDateColumn,
+    OneToMany,
+    Unique
 } from "typeorm";
-import { Length, IsEmail, IsString} from "class-validator";
+import { Length, IsEmail, IsString, IsBoolean, IsOptional} from "class-validator";
+import { Log } from "../logs/LogEntity";
 
 @Entity()
+@Unique('dni', ['dni'])
 export class Contact {
     @PrimaryGeneratedColumn()
     id: number;
@@ -18,13 +22,29 @@ export class Contact {
     name: string;
 
     @Column()
+    @Length(4, 50)
+    @IsString()
+    lastName: string;
+
+    @Column({nullable: true})
+    @IsOptional()
+    @Length(9, 9)
+    @IsString()
+    dni: string;
+
+    @Column()
     @Length(3, 254)
     @IsEmail()
     email: string;
 
     @Column()
-    @Length(3, 254)
+    @Length(9, 13)
+    @IsString()
     phone: string;
+
+    @Column({default: false})
+    @IsBoolean()
+    expelled: boolean = false;
 
     @Column()
     @CreateDateColumn()
@@ -33,5 +53,8 @@ export class Contact {
     @Column()
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Log, (log) => log.contact)
+    logs: Log[];
 
 }

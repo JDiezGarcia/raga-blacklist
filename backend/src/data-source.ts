@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm"
 import { Contact } from "./contacts/ContactEntity";
+import { Log } from "./logs/LogEntity";
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
@@ -7,7 +8,8 @@ export const AppDataSource = new DataSource({
     synchronize: true,
     logging: false,
     entities: [
-        Contact
+        Contact,
+        Log
     ],
     migrations: ["./src/migration/**/*.ts"],
 });
