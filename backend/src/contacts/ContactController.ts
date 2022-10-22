@@ -19,8 +19,8 @@ class ContactController {
         });
         const contacts = await contactRepository.find({
             where: {...params}, 
-            skip: req.query.offset,
-            take: req.query.limit,
+            skip: +req.query.offset,
+            take: +req.query.limit,
             order: {name: 'ASC'} 
         });
         const status = contacts.length > 0 ? 200 : 204

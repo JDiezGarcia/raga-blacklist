@@ -8,8 +8,8 @@ class LogController {
     static searchLogs = async (req: Request, res: Response) => {
         const logRepository = AppDataSource.getRepository(Log);
         const logs = await logRepository.find({
-            skip: req.query.offset,
-            take: req.query.limit,
+            skip: +req.query.offset,
+            take: +req.query.limit,
             order: { dateLog: 'ASC' }
         });
         const status = logs.length > 0 ? 200 : 204
