@@ -25,10 +25,6 @@
    "scripts": {
       "tsc": "tsc",
       "start": "ts-node-dev ./src/index.ts",
-      "prod": "tsc && node ./build/app.js",
-      "typeorm": "typeorm-ts-node-commonjs",
-      "m-create": "typeorm migration:create ./src/migration/",
-      "m-up": "typeorm migration:up",
-      "m-down": "typeorm migration:down"
+      "prod": "tsc && node ./build/app.js"
    }
 }
