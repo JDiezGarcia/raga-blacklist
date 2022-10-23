@@ -7,9 +7,13 @@ class LogController {
 
     static searchLogs = async (req: Request, res: Response) => {
         const logRepository = AppDataSource.getRepository(Log);
+        const paginator = {
+            skip: req.query.offset ? +req.query.offset : 0,
+            take: req.query.limit ? +req.query.limit : 10
+        }
         const logs = await logRepository.find({
-            skip: +req.query.offset,
-            take: +req.query.limit,
+            skip: paginator.skip,
+            take: paginator.take,
             order: { dateLog: 'ASC' }
         });
         const status = logs.length > 0 ? 200 : 204

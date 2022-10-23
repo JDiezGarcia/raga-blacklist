@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-pagination',
-    styleUrls: ['pagination.component.css'],
+    styleUrls: ['pagination.component.scss'],
     templateUrl: './pagination.component.html',
 })
 export class PaginationComponent {

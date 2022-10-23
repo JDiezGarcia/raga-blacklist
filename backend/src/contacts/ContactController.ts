@@ -17,10 +17,14 @@ class ContactController {
                 params[key] = Like(`%${req.query[key]}%`);
             }
         });
+        const paginator = {
+            skip: req.query.offset ? +req.query.offset : 0,
+            take: req.query.limit ? +req.query.limit : 10
+        }
         const contacts = await contactRepository.find({
             where: {...params}, 
-            skip: +req.query.offset,
-            take: +req.query.limit,
+            skip: paginator.skip,
+            take: paginator.take,
             order: {name: 'ASC'} 
         });
         const status = contacts.length > 0 ? 200 : 204

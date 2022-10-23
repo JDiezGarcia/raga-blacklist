@@ -1,5 +1,5 @@
-/package-lock.json
 src/resources/
-/dist
-/node_modules
-
+dist/
+package-lock.json
+node_modules/
+.angular/
