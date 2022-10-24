@@ -46,7 +46,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             phone: [''],
             expelled: [false],
         });
-        this.showListSection = true;
     }
 
     ngOnDestroy(): void {
@@ -61,7 +60,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         };
         search = this.utils.removeEmptyProperties(search);
         this.contactService.get(search).pipe(takeWhile( () => this.isComponentActive === true)).subscribe((res: Contact[]) =>{
-            this.contactList = [...res];
+            if(res && res.length > 0) {
+                this.contactList = [...res];
+                this.showListSection = true;
+            }
         })
     }
 
@@ -69,7 +71,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl("/contacts/profile/" + id);
     } 
 
-    deleteContact(id: number): void {
-
+    deleteContact(id: number): void{
     }
 }

@@ -1,4 +1,4 @@
-src/resources/
+src/assets/
 dist/
 package-lock.json
 node_modules/

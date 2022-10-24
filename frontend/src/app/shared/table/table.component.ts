@@ -3,11 +3,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TColumnConfig, TData, TOptionsEnum } from './models/table.model';
 import { faEye, faTrash, IconDefinition, } from '@fortawesome/free-solid-svg-icons';
+import { TableFieldPipe } from '../../core/pipes/table-fields.pipe';
 
 @Component({
     selector: 'app-table',
     standalone: true,
-    imports: [CommonModule, FontAwesomeModule],
+    imports: [CommonModule, FontAwesomeModule, TableFieldPipe],
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss'],
 })

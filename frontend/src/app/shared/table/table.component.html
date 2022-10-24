@@ -8,11 +8,12 @@
     <tbody>
         <tr *ngFor="let row of data" class="text-center">
             <td *ngFor="let field of columns">
-                {{row[field.key]}}
+                <div [innerHtml]="row[field.key] | tableFieldPipe"></div>
             </td>
             <td>
                 <fa-icon class="option" (click)="selectOne(row.id, optionsType.View)"[icon]="eyeIcon"></fa-icon>
                 <fa-icon class="option" (click)="selectOne(row.id, optionsType.Delete)" [icon]="trashIcon"></fa-icon>
+                <i class="fas-eye"></i>
             </td>
         </tr>
     </tbody>
