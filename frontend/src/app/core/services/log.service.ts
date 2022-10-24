@@ -4,7 +4,9 @@ import { ApiService } from './api.service';
 import { Contact } from '../models/contacts.model';
 
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class LogService {
     constructor(
         private apiService: ApiService,

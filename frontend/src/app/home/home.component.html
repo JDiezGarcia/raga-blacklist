@@ -1,2 +1,60 @@
-<p>home works!</p>
-<h1>NOT WORKING</h1>
+<div class="home mt-5">
+    <div class="container page">
+        <div class="row mb-5">
+            <h2 class="title">Filtros:</h2>
+            <form class="search-form" [formGroup]="searchForm" (ngSubmit)="submitForm()">
+                <div class="row">
+                    <div class="mb-3 col-lg-3 col-12">
+                        <label for="name" class="form-label ">Nombre:</label>
+                        <input type="text" class="form-control" id="name" formControlName="name" placeholder="John Doe">
+                    </div>
+                    <div class="mb-3 col-lg-3 col-12">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" formControlName="email" placeholder="name@example.com">
+                    </div>
+                    <div class="mb-3 col-lg-3 col-12">
+                        <label for="dni" class="form-label">DNI:</label>
+                        <input type="text" class="form-control" id="dni" formControlName="dni" placeholder="[0/X]0000000X">
+                    </div>
+                    <div class="mb-3 col-lg-3 col-12">
+                        <label for="phone" class="form-label">Telefono:</label>
+                        <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="(EXT)666666666">
+                    </div>
+                </div>
+                <div class="row justify-content-end g-1 mb-2">
+                    <div class="col-lg-2 form-check form-switch">
+                        <label class="form-check-label" for="expelled">No deseado</label>
+                        <input class="form-control form-check-input" type="checkbox" formControlName="expelled" role="switch" id="expelled">
+                    </div>
+                </div>
+                <div class="row justify-content-end g-1">
+                    <button class="col-lg-2 col-12 btn bg-dark text-white justify-content-end" [disabled]="!searchForm.valid" type="submit">
+                        Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div *ngIf="showListSection && contactList && contactList.length > 0" class="row">
+            <h2 class="title">Lista de contactos:</h2>
+            <app-table [columns]="tableColumns" [data]="contactList" (delete)="deleteContact($event)" (view)="redirect($event)"></app-table>
+        </div>
+    </div>
+    <div *ngIf="showModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
