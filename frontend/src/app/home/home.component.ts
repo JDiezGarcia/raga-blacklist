@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MConfig } from './../shared/modal/models/modal.model';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { takeWhile } from 'rxjs';
-import { Contact, ContactParams } from '../core/models/contacts.model';
+import { Contact, ContactList, ContactParams } from '../core/models/contacts.model';
 import { ContactService } from '../core/services/contact.service';
 import { UtilsService } from '../core/services/utils.service';
-import { TColumnConfig, TOptionsEnum } from '../shared/table/models/table.model';
+import { TColumnConfig } from '../shared/table/models/table.model';
 
 @Component({
     selector: 'app-home',
@@ -14,6 +16,8 @@ import { TColumnConfig, TOptionsEnum } from '../shared/table/models/table.model'
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
+    @ViewChild('modal') modalContainer!: ElementRef;
+    modalRef!: NgbModalRef;
     isSubmiting!: boolean;
     searchForm!: FormGroup;
     showListSection = false;
@@ -27,13 +31,19 @@ export class HomeComponent implements OnInit, OnDestroy {
         { key: 'email', name: 'Email' },
         { key: 'expelled', name: 'No deseado' },
     ];
+    modalConfig!: MConfig;
     contactList: Contact[] = [];
+    totalContacts: number = 0;
+    contactId?: number;
+    currentPage: number = 1;
+    limitPerPage = 10;
 
     constructor(
         private readonly fb: FormBuilder,
         private readonly utils: UtilsService,
         private readonly router: Router,
-        private readonly contactService: ContactService
+        private readonly contactService: ContactService,
+        private readonly modalService: NgbModal
     ) { }
 
     ngOnInit(): void {
@@ -52,19 +62,31 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.isComponentActive = false;
     }
 
-    submitForm(): void {
+    submitForm(reset = false): void {
+        if(reset){
+            this.currentPage = 1;
+        }
         let search: ContactParams = {
             ...this.searchForm.value,
-            limit: 10,
-            offset: 0
+            limit: this.limitPerPage,
+            offset: this.currentPage - 1
         };
         search = this.utils.removeEmptyProperties(search);
-        this.contactService.get(search).pipe(takeWhile( () => this.isComponentActive === true)).subscribe((res: Contact[]) =>{
-            if(res && res.length > 0) {
-                this.contactList = [...res];
+        this.contactService.get(search).pipe(takeWhile( () => this.isComponentActive === true)).subscribe((res: ContactList) =>{
+            if(res && res.contacts && res.contacts.length > 0) {
+                this.contactList = [...res.contacts];
+                this.totalContacts = Math.ceil(res.total / this.limitPerPage);
                 this.showListSection = true;
+            }else{
+                this.modalConfig = {
+                    msg: 'No se han encontrado resultados.',
+                    title: 'Sin resultados',
+                };
+                this.modalRef = this.modalService.open(this.modalContainer, {centered: true});
+                this.showListSection = false;
+                this.currentPage = 1; 
             }
-        })
+        });
     }
 
     redirect(id: number): void {
@@ -72,5 +94,44 @@ export class HomeComponent implements OnInit, OnDestroy {
     } 
 
     deleteContact(id: number): void{
+        this.contactId = id;
+        this.modalConfig = {
+            msg: '¿Seguro que desea eliminar el contacto?',
+            title: 'Eliminar contacto',
+            close: {
+                text: 'Cancelar',
+                colorB: 'bg-black',
+                colorT: 'text-white'
+            },
+            confirm: {
+                text: 'Eliminar',
+                colorB: 'bg-danger',
+                colorT: 'text-white'
+            }
+        };
+        this.modalRef = this.modalService.open(this.modalContainer, {centered: true});
+    }
+
+    confirmDelete(){
+        if(this.contactId){
+            this.contactService.delete(this.contactId).pipe(takeWhile( () => !!this.isComponentActive)).subscribe((res) => {
+                if(res){
+                    this.contactList =[...this.contactList.filter(contact => contact.id !== this.contactId)];
+                }
+                this.closeModal();
+            });
+        }else{
+            this.closeModal();
+        }
+    }
+
+    paginate(page: number){
+        this.currentPage = page;
+        this.submitForm();
+    }
+
+    closeModal() {
+        this.contactId = undefined;
+        this.modalRef.close();
     }
 }

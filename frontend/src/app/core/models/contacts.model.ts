@@ -26,6 +26,11 @@ export class Contact {
     }
 }
 
+export interface ContactList {
+    contacts: Contact[];
+    total: number;
+}
+
 export interface ContactParams extends Partial<Contact>{
     offset: number,
     limit: number,

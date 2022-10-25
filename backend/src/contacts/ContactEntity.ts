@@ -32,8 +32,9 @@ export class Contact {
     @IsString()
     dni: string;
 
-    @Column()
-    @Length(3, 254)
+    @Column({ nullable: true })
+    @IsOptional()
+    @Length(3, 50)
     @IsEmail()
     email: string;
 

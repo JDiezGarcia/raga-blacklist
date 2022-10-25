@@ -1,0 +1,13 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="confirmDialog">{{config.title}}</h1>
+        <button type="button" class="btn-close" (click)="closeM()" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row justify-content-center"><p>{{config.msg}}</p></div>
+        <div class="row justify-content-end">
+            <button *ngIf="config.close" [ngClass]="[config.close.colorT, config.close.colorB]" type="button" class="col-3 btn" (click)="closeM()">{{config.close.text}}</button>
+            <button *ngIf="config.confirm" [ngClass]="[config.confirm.colorT, config.confirm.colorB]" type="button" class="col-3 btn" (click)="confirmM()">{{config.confirm.text}}</button>
+        </div>
+    </div>
+</div>

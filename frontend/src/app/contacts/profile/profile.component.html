@@ -1,3 +1,20 @@
-<p>
-  contacts works!
-</p>
+<div class="home mt-5">
+    <div class="container page">
+        <div class="row mb-5">
+            <h2 class="title">Datos:</h2>
+            
+        </div>
+
+        <div *ngIf="showListSection && logList && logList.length > 0" class="row">
+            <h2 class="title">Lista de logs:</h2>
+            <app-table [columns]="tableColumns" [data]="logList" (delete)="deleteContact($event)"
+                (view)="redirect($event)"></app-table>
+            <app-pagination [totalPages]="totalLogs" [currentPage]="currentPage" (pageSelect)="paginate($event)">
+            </app-pagination>
+        </div>
+    </div>
+
+    <ng-template #modal>
+        <app-modal [config]="modalConfig" (close)="closeModal()" (confirm)="confirmDelete()"></app-modal>
+    </ng-template>
+</div>

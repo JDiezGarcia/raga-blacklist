@@ -1,22 +1,25 @@
-import { Component, Output, EventEmitter, Input} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 
 @Component({
     selector: 'app-pagination',
+    standalone: true,
     styleUrls: ['pagination.component.scss'],
+    imports: [CommonModule],
     templateUrl: './pagination.component.html',
 })
 export class PaginationComponent {
-    constructor(
-        private route: ActivatedRoute
-    ) { }
     @Output() pageSelect = new EventEmitter();
-    @Input() set totalPages(totalPages: number){
+    @Input() set totalPages(totalPages: number) {
         this.maxPage = totalPages;
         this.setPages();
     };
+    @Input() set currentPage(currentPage: number){
+        this.actualPage = currentPage;
+        this.setPages();
+    };
 
-    actualPage!: number;
+    actualPage: number = 1;
     maxPage!: number;
     previousPage!: number;
     nextPage!: number;
@@ -27,26 +30,10 @@ export class PaginationComponent {
         this.pageSelect.emit(page);
     }
 
-    setPages(){
-        
-        this.firstPage = NaN;
-        if(this.actualPage != 1){
-            this.previousPage = this.actualPage - 1;
-            this.firstPage = 1;
-         };
-        if(this.maxPage != this.actualPage){
-            this.lastPage = this.maxPage;
-            this.nextPage = this.actualPage + 1;
-         };
-
-    }
-
-    ngOnInit(){
-        this.route.queryParamMap.subscribe((params) => {
-            this.actualPage = parseInt(params.get('page') as string)
-            if (!this.actualPage) {
-                this.actualPage = 1;
-            }
-        });
+    setPages() {
+        this.lastPage = this.maxPage;
+        this.firstPage = 1;
+        this.previousPage = this.actualPage - 1;
+        this.nextPage = this.actualPage + 1;
     }
 }

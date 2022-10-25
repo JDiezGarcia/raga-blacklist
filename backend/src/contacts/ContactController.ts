@@ -21,14 +21,14 @@ class ContactController {
             skip: req.query.offset ? +req.query.offset : 0,
             take: req.query.limit ? +req.query.limit : 10
         }
-        const contacts = await contactRepository.find({
+        const [contact, number] = await contactRepository.findAndCount({
             where: {...params}, 
             skip: paginator.skip,
             take: paginator.take,
             order: {name: 'ASC'} 
         });
-        const status = contacts.length > 0 ? 200 : 204
-        res.status(status).send(contacts);
+        const status = contact.length > 0 ? 200 : 204;
+        res.status(status).send({total: number, contacts: contact});
     };
 
     static getProfile = async (req: Request, res: Response) => {
@@ -56,15 +56,17 @@ class ContactController {
         if (exists) {
             errors.exist = ErrorType.Exist;
             res.status(404).send({errors: errors})
+            return;
         }
         try {
-            await contactRepository.save(contact);
+            await contactRepository.save(contact)
+            ;
         } catch (e) {
             errors.sql = ErrorType.SQL
             res.status(409).send({ errors: errors });
             return;
         }
-        res.status(201).send("Contact created");
+        res.status(201).send({success: "Contact created"});
     };
 
     static editContact = async (req: Request, res: Response) => {
@@ -74,7 +76,7 @@ class ContactController {
         try {
             contact = await contactRepository.findOneByOrFail({ id });
         } catch (error) {
-            res.status(404).send("Contact not found");
+            res.status(404).send({ success: "Contact not found"});
             return;
         }
         Object.keys(req.body).forEach(key => {
@@ -103,11 +105,11 @@ class ContactController {
         try {
             contact = await contactRepository.findOneByOrFail({ id });
         } catch (error) {
-            res.status(404).send("Contact not found");
+            res.status(404).send({ success: "Contact not found"});
             return;
         }
         contactRepository.delete(id);
-        res.status(200).send('Successfuly delete contact!');
+        res.status(200).send({ success: 'Successfuly delete contact!'});
     };
 
     static changeExpelled = async (req: Request, res: Response) => {
@@ -134,7 +136,7 @@ class ContactController {
             res.status(409).send(e);
             return;
         }
-        res.status(200).send('Successfuly change expelled to ' + expelled);
+        res.status(200).send({ success: 'Successfuly change expelled to ' + expelled});
     }
 };
 

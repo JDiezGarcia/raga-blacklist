@@ -7,18 +7,15 @@ import { PaginationComponent } from './pagination/pagination.component';
 
 
 @NgModule({
-  declarations: [
-    PaginationComponent,
-  ],
+  declarations: [],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
-    RouterModule,
+    RouterModule
   ],
   exports: [
-    PaginationComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

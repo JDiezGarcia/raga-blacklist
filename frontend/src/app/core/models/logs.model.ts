@@ -13,3 +13,8 @@ export class Log {
         this.employee = employee;
     }
 }
+
+export interface LogList {
+    logs: Log[];
+    total: number;
+}

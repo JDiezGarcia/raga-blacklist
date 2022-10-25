@@ -15,7 +15,7 @@ class DbController {
                 res.status(404).send({error: {upload: 'Error uploading file'}});
                 return;
             }
-            res.status(200).send("Successfully Uploaded!");
+            res.status(200).send({success: "Successfully Uploaded!"});
         });
     };
 

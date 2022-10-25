@@ -1,8 +1,8 @@
+import { ContactList } from './../models/contacts.model';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { Contact, ContactParams } from '../models/contacts.model';
-import { environment } from 'src/environments/environment';
 import { HttpParams } from '@angular/common/http';
 
 
@@ -12,10 +12,10 @@ import { HttpParams } from '@angular/common/http';
 export class ContactService {
   constructor (
     private apiService: ApiService,
-  ) { }
+  ) {}
 
-  get(params: ContactParams): Observable<Contact[]> {
-    return this.apiService.get<Contact[]>('contact', new HttpParams({fromObject: {...params}}));
+  get(params: ContactParams): Observable<ContactList> {
+    return this.apiService.get<ContactList>('contact', new HttpParams({fromObject: {...params}}));
   }
 
   create() {
@@ -26,8 +26,8 @@ export class ContactService {
 
   }
 
-  delete() {
-
+  delete(id: number): Observable<string>{
+    return this.apiService.delete<string>('contact/' + id);
   }
 
 }
