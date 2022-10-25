@@ -11,3 +11,8 @@ export enum TOptionsEnum {
     Delete = 'delete',
     View = 'view'
 }
+
+export interface TOptionsConfig {
+    delete?: boolean;
+    view?: boolean;
+}

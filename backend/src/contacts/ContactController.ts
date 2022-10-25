@@ -95,20 +95,18 @@ class ContactController {
             res.status(409).send(e);
             return;
         }
-        res.status(200).send('Success updating contact!');
+        res.status(200).send({success:'Success updating contact!'});
     };
 
     static deleteContact = async (req: Request, res: Response) => {
-        const id = Number(req.params.id);
         const contactRepository = AppDataSource.getRepository(Contact);
-        let contact: Contact;
         try {
-            contact = await contactRepository.findOneByOrFail({ id });
+            const contact = await contactRepository.findOneByOrFail({id: +req.params.id });
+            contactRepository.remove(contact);
         } catch (error) {
             res.status(404).send({ success: "Contact not found"});
             return;
         }
-        contactRepository.delete(id);
         res.status(200).send({ success: 'Successfuly delete contact!'});
     };
 
@@ -120,7 +118,7 @@ class ContactController {
         try {
             contact = await contactRepository.findOneByOrFail({id});
         } catch (error) {
-            res.status(404).send("Contact not found");
+            res.status(404).send({error:"Contact not found"});
             return;
         }
         let errors: TypeResponseErrors<Contact> = {};

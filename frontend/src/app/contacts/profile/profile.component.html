@@ -1,14 +1,44 @@
 <div class="home mt-5">
     <div class="container page">
+        <div class="row mb-3">
+            <button class="col-lg-1 col-12 btn bg-dark text-white" [routerLink]="'/'">
+                <i class="fa-solid fa-arrow-circle-left text-white"></i> Volver
+            </button>
+        </div>
         <div class="row mb-5">
-            <h2 class="title">Datos:</h2>
-            
+            <h2 class="title">Datos de contacto:</h2>
+            <app-form-contact class="mt-3" [data]="currentContact" [config]="formConfig" (isSuccess)="isSuccess($event)"></app-form-contact>
         </div>
 
+        <div class="row mb-5">
+            <h2 class="title">Añadir registro:</h2>
+            <form class="mt-3 search-form" [formGroup]="logForm">
+                <div class="row">
+                    <div class="mb-3 col-lg-9 col-12">
+                        <label for="description" class="form-label fw-bold">Description del suceso:</label>
+                        <textarea class="form-control" id="description" rows="3" formControlName="description" placeholder="Describa lo sucedido...."></textarea>
+                    </div>
+                    <div class="mb-3 col-lg-3 col-12">
+                        <div class="col-12">
+                            <label for="dateLog" class="form-label fw-bold">Fecha del suceso:</label>   
+                            <input type="date" class="form-control" id="date-log" formControlName="dateLog"  placeholder="YYYY/MM/DD">
+                        </div>
+                        <div class="col-12 mt-4">
+                            <label for="employee" class="form-label fw-bold">Empleado:</label>
+                            <input type="text" class="form-control" id="employee" formControlName="employee" placeholder="Gabo">
+                        </div>
+                        <button class="col-12 btn bg-dark text-white align-self-center mt-4"
+                            [disabled]="!logForm.valid" (click)="submitForm()">
+                            Añadir
+                        </button>
+                    </div>
+                    </div>
+            </form>
+        </div>
         <div *ngIf="showListSection && logList && logList.length > 0" class="row">
             <h2 class="title">Lista de logs:</h2>
-            <app-table [columns]="tableColumns" [data]="logList" (delete)="deleteContact($event)"
-                (view)="redirect($event)"></app-table>
+            <app-table class="mt-3" [columns]="tableColumns" [data]="logList" [options]="tableOptions"
+                (delete)="deleteContact($event)" (view)="redirect($event)"></app-table>
             <app-pagination [totalPages]="totalLogs" [currentPage]="currentPage" (pageSelect)="paginate($event)">
             </app-pagination>
         </div>

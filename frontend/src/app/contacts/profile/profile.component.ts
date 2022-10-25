@@ -1,14 +1,19 @@
+import { FContactConfig, FContactModeEnum } from './../form-contact/models/form-contact.model';
+import { TOptionsConfig } from './../../shared/table/models/table.model';
 import { LogService } from './../../core/services/log.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TColumnConfig } from '../../shared/table/models/table.model';
 import { MConfig } from '../../shared/modal/models/modal.model';
 import { Log, LogList } from '../../core/models/logs.model';
 import { UtilsService } from 'src/app/core/services/utils.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ContactService } from 'src/app/core/services/contact.service';
-import { takeWhile } from 'rxjs';
+import { take, takeWhile } from 'rxjs';
+import { throws } from 'assert';
+import { Contact } from 'src/app/core/models/contacts.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-profile',
@@ -19,18 +24,22 @@ export class ProfileComponent implements OnInit {
     @ViewChild('modal') modalContainer!: ElementRef;
     modalRef!: NgbModalRef;
     isSubmiting!: boolean;
-    contactForm!: FormGroup;
+    logForm!: FormGroup;
     showListSection = false;
     isComponentActive = false;
     showModal = false;
     tableColumns: TColumnConfig[] = [
-        { key: 'name', name: 'Nombre' },
-        { key: 'lastName', name: 'Apellidos' },
-        { key: 'phone', name: 'Telefono' },
-        { key: 'dni', name: 'DNI' },
-        { key: 'email', name: 'Email' },
-        { key: 'expelled', name: 'No deseado' },
+        { key: 'description', name: 'Descripcion' },
+        { key: 'dateLog', name: 'Fecha del suceso' },
+        { key: 'employee', name: 'Trabajador'}
     ];
+    tableOptions: TOptionsConfig = {
+        delete: true
+    };
+    formConfig: FContactConfig = {
+        btnText: 'Guardar',
+        mode: FContactModeEnum.VIEW
+    }
     modalConfig!: MConfig;
     logList: Log[] = [];
     totalLogs: number = 0;
@@ -38,25 +47,34 @@ export class ProfileComponent implements OnInit {
     currentPage: number = 1;
     limitPerPage = 10;
     contactId?: number;
+    currentContact!: Contact;
 
     constructor(
         private readonly fb: FormBuilder,
         private readonly router: Router,
         private readonly contactService: ContactService,
         private readonly modalService: NgbModal,
-        private readonly logService: LogService
+        private readonly logService: LogService,
+        private readonly route: ActivatedRoute,
+        private readonly datePipe: DatePipe,
     ) {}
 
     ngOnInit(): void {
         this.isComponentActive = true;
-        this.contactForm = this.fb.group({
-            name: ['', []],
-            lastName: [''],
-            email: [''],
-            dni: [''],
-            phone: [''],
-            expelled: [false],
+        this.route.params.pipe(takeWhile(() => !!this.isComponentActive)).subscribe((param) => {
+            this.contactId = param.id;
         });
+        if(this.contactId){
+            this.contactService.getProfile(this.contactId).pipe(takeWhile(() => !!this.isComponentActive)).subscribe((contact) => {
+                this.currentContact = contact;
+            })
+            this.paginate(1);
+        }
+        this.logForm = this.fb.group({
+            description: ['', Validators.required],
+            dateLog: ['', Validators.required],
+            employee: [''],
+        })
     }
 
     ngOnDestroy(): void {
@@ -68,7 +86,9 @@ export class ProfileComponent implements OnInit {
         if(this.contactId){
             this.logService.get(this.contactId,this.limitPerPage, this.currentPage - 1).pipe(takeWhile(() => this.isComponentActive === true)).subscribe((res: LogList) => {
                 if (res && res.logs && res.logs.length > 0) {
-                    this.logList = [...res.logs];
+                    this.logList = [...res.logs.map((log) => {
+                        return { ...log, dateLog: this.transformDate(log.dateLog) };
+                    })];
                     this.totalLogs = Math.ceil(res.total / this.limitPerPage);
                     this.showListSection = true;
                 } else {
@@ -83,7 +103,10 @@ export class ProfileComponent implements OnInit {
             });
         }
     }
-
+    transformDate(date: string): string {
+        const dateFormat = this.datePipe.transform(date, 'yyyy/MM/dd');
+        return dateFormat ? dateFormat : '';
+    }
     redirect(id: number): void {
         this.router.navigateByUrl("/contacts/profile/" + id);
     }
@@ -109,14 +132,40 @@ export class ProfileComponent implements OnInit {
 
     confirmDelete() {
         if (this.logId) {
-            // this.logService.delete(this.contactId).pipe(takeWhile(() => !!this.isComponentActive)).subscribe((res) => {
-            //     if (res) {
-            //         this.logList = [...this.logList.filter(log => log.id !== this.contactId)];
-            //     }
-            //     this.closeModal();
-            // });
+            this.logService.delete(this.logId).pipe(takeWhile(() => !!this.isComponentActive)).subscribe((res) => {
+                if (res) {
+                    this.logList = [...this.logList.filter(log => log.id !== this.logId)];
+                }
+                this.closeModal();
+            });
         } else {
             this.closeModal();
+        }
+    }
+
+    isSuccess(success: boolean) {
+        if(success){
+            this.modalConfig = {
+                msg: 'Se modificaron los campos correctamente.',
+                title: 'Actualizacion',
+            };
+        }else{
+            this.modalConfig = {
+                msg: 'Se ha recibido un error al modificar.',
+                title: 'Error',
+            };
+        }
+        this.modalRef = this.modalService.open(this.modalContainer, { centered: true });
+    }
+
+    submitForm() {
+        if(this.contactId){
+            this.logService.create(this.contactId, this.logForm.value).pipe(take(1)).subscribe((res) =>{
+                if(res){
+                    this.logList = [...this.logList, this.logForm.value];
+                    this.logForm.reset();
+                }
+            })
         }
     }
 

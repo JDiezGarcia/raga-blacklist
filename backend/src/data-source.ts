@@ -11,5 +11,4 @@ export const AppDataSource = new DataSource({
         Contact,
         Log
     ],
-    migrations: ["./src/migration/**/*.ts"],
 });

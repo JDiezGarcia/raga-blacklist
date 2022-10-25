@@ -1,14 +1,17 @@
 export class Log {
-    date: string;
+    id: number;
+    dateLog: string;
     description: string;
     employee: string;
 
     constructor(
-        date: string,
+        id: number,
+        dateLog: string,
         description: string,
         employee: string,
     ) {
-        this.date = date;
+        this.id = id;
+        this.dateLog = dateLog;
         this.description = description;
         this.employee = employee;
     }

@@ -2,7 +2,7 @@
     <thead class="table-dark">
         <tr>
             <th class="text-center" scope="col" *ngFor="let column of columns">{{column.name}}</th>
-            <th class="text-center" scope="col">Opciones</th>
+            <th *ngIf="options && (options.delete || options.view)" class="text-center" scope="col">Opciones</th>
         </tr>
     </thead>
     <tbody>
@@ -10,10 +10,9 @@
             <td *ngFor="let field of columns">
                 <div [innerHtml]="row[field.key] | tableFieldPipe"></div>
             </td>
-            <td>
-                <fa-icon class="option" (click)="selectOne(row.id, optionsType.View)"[icon]="eyeIcon"></fa-icon>
-                <fa-icon class="option" (click)="selectOne(row.id, optionsType.Delete)" [icon]="trashIcon"></fa-icon>
-                <i class="fas-eye"></i>
+            <td *ngIf="options && (options.delete || options.view)">
+                <fa-icon *ngIf="options.view" class="option" (click)="selectOne(row.id, optionsType.View)"[icon]="eyeIcon"></fa-icon>
+                <fa-icon *ngIf="options.delete" class="option" (click)="selectOne(row.id, optionsType.Delete)" [icon]="trashIcon"></fa-icon>
             </td>
         </tr>
     </tbody>

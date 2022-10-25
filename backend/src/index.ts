@@ -10,7 +10,7 @@ import { AppDataSource } from './data-source';
 AppDataSource.initialize().then(async () => {
         const app = express();
         app.use(cors());
-        app.use(bodyParser.json())
+        app.use(bodyParser.json({type: 'application/json'}));
         app.use(fileUploader());
         app.use("/", routes);
         app.listen(3000, () => {

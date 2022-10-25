@@ -1,8 +1,21 @@
 <div class="home mt-5">
     <div class="container page">
-        <div class="row mb-5">
+        <div class="row mb-3">
+            <button class=" m-1 col-lg-2 col-12 btn bg-dark text-white" [routerLink]="'contacts/create'">
+                <i class="fa-solid fa-user text-white"></i> Crear contacto
+            </button>
+            <button class="m-1 col-lg-2 col-12 btn bg-dark text-white" (click)="downloadFile()">
+                <i class="fa-solid fa-download text-white"></i> Descargar
+            </button>
+
+            <input hidden type="file" id="last-name" (change)="uploadFile($event)" #file>
+            <button class="m-1 col-lg-2 col-12 btn bg-dark text-white" (click)="file.click()">
+                <i class="fa-solid fa-upload text-white"></i> Subir
+            </button>
+        </div>
+        <div class="row mb-4">
             <h2 class="title">Busqueda contactos:</h2>
-            <form class="search-form" [formGroup]="searchForm" (ngSubmit)="submitForm(true)">
+            <form class="mt-3 search-form" [formGroup]="searchForm" (ngSubmit)="submitForm(true)">
                 <div class="row">
                     <div class="mb-3 col-lg-2 col-12">
                         <label for="name" class="form-label ">Nombre:</label>
@@ -10,29 +23,35 @@
                     </div>
                     <div class="mb-3 col-lg-3 col-12">
                         <label for="lastName" class="form-label ">Apellidos:</label>
-                        <input type="text" class="form-control" id="last-name" formControlName="lastName" placeholder="Doe Morrison">
+                        <input type="text" class="form-control" id="last-name" formControlName="lastName"
+                            placeholder="Doe Morrison">
                     </div>
                     <div class="mb-3 col-lg-3 col-12">
                         <label for="email" class="form-label">Email:</label>
-                        <input type="email" class="form-control" id="email" formControlName="email" placeholder="name@example.com">
+                        <input type="email" class="form-control" id="email" formControlName="email"
+                            placeholder="name@example.com">
                     </div>
                     <div class="mb-3 col-lg-2 col-12">
                         <label for="dni" class="form-label">DNI:</label>
-                        <input type="text" class="form-control" id="dni" formControlName="dni" placeholder="[0/X]0000000X">
+                        <input type="text" class="form-control" id="dni" formControlName="dni"
+                            placeholder="[0/X]0000000X">
                     </div>
                     <div class="mb-3 col-lg-2 col-12">
                         <label for="phone" class="form-label">Telefono:</label>
-                        <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="(EXT)666666666">
+                        <input type="text" class="form-control" id="phone" formControlName="phone"
+                            placeholder="(EXT)666666666">
                     </div>
                 </div>
                 <div class="row justify-content-end g-1 mb-2">
                     <div class="col-lg-2 form-check form-switch">
                         <label class="form-check-label" for="expelled">No deseado</label>
-                        <input class="form-control form-check-input" type="checkbox" formControlName="expelled" role="switch" id="expelled">
+                        <input class="form-control form-check-input" type="checkbox" formControlName="expelled"
+                            role="switch" id="expelled">
                     </div>
                 </div>
                 <div class="row justify-content-end g-1">
-                    <button class="col-lg-2 col-12 btn bg-dark text-white justify-content-end" [disabled]="!searchForm.valid" type="submit">
+                    <button class="col-lg-2 col-12 btn bg-dark text-white justify-content-end"
+                        [disabled]="!searchForm.valid" type="submit">
                         Buscar
                     </button>
                 </div>
@@ -41,11 +60,13 @@
 
         <div *ngIf="showListSection && contactList && contactList.length > 0" class="row">
             <h2 class="title">Lista de contactos:</h2>
-            <app-table [columns]="tableColumns" [data]="contactList" (delete)="deleteContact($event)" (view)="redirect($event)"></app-table>
-            <app-pagination [totalPages]="totalContacts" [currentPage]="currentPage" (pageSelect)="paginate($event)"></app-pagination>
+            <app-table class="mt-3" [columns]="tableColumns" [data]="contactList" [options]="tableOptions"
+                (delete)="deleteContact($event)" (view)="redirect($event)"></app-table>
+            <app-pagination [totalPages]="totalContacts" [currentPage]="currentPage" (pageSelect)="paginate($event)">
+            </app-pagination>
         </div>
     </div>
-    
+
     <ng-template #modal>
         <app-modal [config]="modalConfig" (close)="closeModal()" (confirm)="confirmDelete()"></app-modal>
     </ng-template>

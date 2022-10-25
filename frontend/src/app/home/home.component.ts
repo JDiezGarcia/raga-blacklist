@@ -1,3 +1,5 @@
+import { FileSaverService } from 'ngx-filesaver';
+import { saveAs } from 'file-saver';
 import { MConfig } from './../shared/modal/models/modal.model';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -7,7 +9,7 @@ import { takeWhile } from 'rxjs';
 import { Contact, ContactList, ContactParams } from '../core/models/contacts.model';
 import { ContactService } from '../core/services/contact.service';
 import { UtilsService } from '../core/services/utils.service';
-import { TColumnConfig } from '../shared/table/models/table.model';
+import { TColumnConfig, TOptionsConfig } from '../shared/table/models/table.model';
 
 @Component({
     selector: 'app-home',
@@ -31,6 +33,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         { key: 'email', name: 'Email' },
         { key: 'expelled', name: 'No deseado' },
     ];
+    tableOptions: TOptionsConfig = {
+        view: true,
+        delete: true
+    };
     modalConfig!: MConfig;
     contactList: Contact[] = [];
     totalContacts: number = 0;
@@ -43,7 +49,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         private readonly utils: UtilsService,
         private readonly router: Router,
         private readonly contactService: ContactService,
-        private readonly modalService: NgbModal
+        private readonly modalService: NgbModal,
+        private readonly fs: FileSaverService,
     ) { }
 
     ngOnInit(): void {
@@ -57,6 +64,57 @@ export class HomeComponent implements OnInit, OnDestroy {
             expelled: [false],
         });
     }
+
+    uploadFile(event: Event) {
+        const formData: FormData = new FormData();
+        const target = event.target as HTMLInputElement;
+        if(target && target.files && target.files.length > 0){
+            formData.append('sql', target.files[0]);
+        }
+        this.utils.upload(formData).pipe(takeWhile(() => !!this.isComponentActive)).subscribe({
+            next: () => {
+                this.modalConfig = {
+                    msg: 'Se ha subido la Base de Datos correctamente',
+                    title: 'Exito - Subida',
+                };
+                this.modalRef = this.modalService.open(this.modalContainer, { centered: true });
+            },
+            error: () => {
+                this.modalConfig = {
+                    msg: 'Error en subida de la Base de Datos.',
+                    title: 'Error - Subida',
+                };
+                this.modalRef = this.modalService.open(this.modalContainer, { centered: true });
+            }
+        })
+    }
+
+    downloadFile(){
+        // this.utils.download().subscribe((data:Blob | MediaSource)=> {
+        //     let downloadURL = window.URL.createObjectURL(data);
+        //     saveAs(downloadURL);
+        // })
+        this.utils.download().pipe(takeWhile(() => !!this.isComponentActive)).subscribe({
+            next: (sql) => {
+                this.fs.save(sql, 'raga-blacklist.sqlite');
+                this.modalConfig = {
+                    msg: 'Se ha descargado la Base de Datos correctamente',
+                    title: 'Exito - Descarga',
+                };
+                this.modalRef = this.modalService.open(this.modalContainer, { centered: true });
+            },
+            error: (e) => {
+                console.log(e)
+                this.modalConfig = {
+                    msg: 'Error en descarga de la Base de Datos.',
+                    title: 'Error - Descarga',
+                };
+                this.modalRef = this.modalService.open(this.modalContainer, { centered: true });
+            }
+        })
+    }
+
+
 
     ngOnDestroy(): void {
         this.isComponentActive = false;

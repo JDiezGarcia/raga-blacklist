@@ -3,19 +3,19 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
-        path: '/profile/:id',
+        path: 'profile/:id',
         loadChildren: () =>
             import('./profile/profile.module').then((m) => m.ProfileModule),
     },
     {
-        path: '/create',
+        path: 'create',
         loadChildren: () =>
             import('./create/create.module').then((m) => m.CreateModule),
     },
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes)],
+    imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class ContactsRoutingModule { }

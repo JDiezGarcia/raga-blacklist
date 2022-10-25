@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TColumnConfig, TData, TOptionsEnum } from './models/table.model';
+import { TColumnConfig, TData, TOptionsConfig, TOptionsEnum } from './models/table.model';
 import { faEye, faTrash, IconDefinition, } from '@fortawesome/free-solid-svg-icons';
 import { TableFieldPipe } from '../../core/pipes/table-fields.pipe';
 
@@ -16,6 +16,7 @@ export class TableComponent {
     @Output() delete = new EventEmitter<number>();
     @Output() view = new EventEmitter<number>();
     @Input()columns!: TColumnConfig[];
+    @Input()options?: TOptionsConfig; 
     @Input()data!: TData[];
     eyeIcon: IconDefinition = faEye;
     trashIcon: IconDefinition = faTrash;

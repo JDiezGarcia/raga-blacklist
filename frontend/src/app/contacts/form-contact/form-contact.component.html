@@ -1,0 +1,41 @@
+<form class="search-form" [formGroup]="contactForm">
+    <div class="row">
+        <div class="mb-3 col-lg-2 col-12">
+            <label for="name" class="form-label fw-bold">Nombre:</label>
+            <input type="text" class="form-control" id="name" formControlName="name" placeholder="John">
+        </div>
+        <div class="mb-3 col-lg-3 col-12">
+            <label for="lastName" class="form-label fw-bold">Apellidos:</label>
+            <input type="text" class="form-control" id="last-name" formControlName="lastName"
+                placeholder="Doe Morrison">
+        </div>
+        <div class="mb-3 col-lg-3 col-12">
+            <label for="email" class="form-label fw-bold">Email:</label>
+            <input type="email" class="form-control" id="email" formControlName="email" placeholder="name@example.com">
+        </div>
+        <div class="mb-3 col-lg-2 col-12">
+            <label for="dni" class="form-label fw-bold">DNI:</label>
+            <input type="text" class="form-control" id="dni" formControlName="dni" placeholder="[0/X]0000000X">
+        </div>
+        <div class="mb-3 col-lg-2 col-12">
+            <label for="phone" class="form-label fw-bold">Telefono:</label>
+            <input type="text" class="form-control" id="phone" formControlName="phone" placeholder="(EXT)666666666">
+        </div>
+    </div>
+    <div class="row justify-content-end g-1 mb-2">
+        <div class="col-lg-2 form-check form-switch">
+            <label class="form-check-label fw-bold" for="expelled">No deseado</label>
+            <input class="form-control form-check-input" type="checkbox" formControlName="expelled" role="switch"
+                id="expelled">
+        </div>
+    </div>
+    <div class="row justify-content-end g-1">
+        <button *ngIf="mode === 'view'" class="col-lg-2 col-12 btn bg-dark text-white justify-content-end" (click)="changeMode()">
+            Editar
+        </button>
+        <button *ngIf="mode !== 'view'" class="col-lg-2 col-12 btn bg-dark text-white justify-content-end" [disabled]="!contactForm.valid"
+            (click)="submitForm()">
+            {{btnText}}
+        </button>
+    </div>
+</form>

@@ -10,11 +10,11 @@ import { AppComponent } from './app.component';
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    AppRoutingModule,
+    HttpClientModule,
     BrowserModule,
     BrowserAnimationsModule,
     FontAwesomeModule,
-    AppRoutingModule,
-    HttpClientModule,
     SharedModule,
   ],
   providers: [],
