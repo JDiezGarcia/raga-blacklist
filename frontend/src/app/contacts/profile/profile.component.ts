@@ -11,9 +11,9 @@ import { UtilsService } from 'src/app/core/services/utils.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ContactService } from 'src/app/core/services/contact.service';
 import { take, takeWhile } from 'rxjs';
-import { throws } from 'assert';
-import { Contact } from 'src/app/core/models/contacts.model';
+import { Contact, ContactFields, ContactFieldsObj } from 'src/app/core/models/contacts.model';
 import { DatePipe } from '@angular/common';
+import { ErrorFields, ErrorMessages } from '../../core/models/response.model';
 
 @Component({
     selector: 'app-profile',
@@ -57,6 +57,7 @@ export class ProfileComponent implements OnInit {
         private readonly logService: LogService,
         private readonly route: ActivatedRoute,
         private readonly datePipe: DatePipe,
+        private readonly utils: UtilsService
     ) {}
 
     ngOnInit(): void {
@@ -143,17 +144,24 @@ export class ProfileComponent implements OnInit {
         }
     }
 
-    isSuccess(success: boolean) {
-        if(success){
+    isSuccess(success: boolean | ErrorFields) {
+        if (typeof success === 'boolean') {
             this.modalConfig = {
                 msg: 'Se modificaron los campos correctamente.',
-                title: 'Actualizacion',
+                title: 'Exito actualizando',
             };
-        }else{
-            this.modalConfig = {
-                msg: 'Se ha recibido un error al modificar.',
-                title: 'Error',
-            };
+        } else {
+            if (success.validators) {
+                this.modalConfig = {
+                    msg: this.utils.validatorMessage<ContactFields>(ContactFieldsObj, success),
+                    title: ErrorMessages.validators,
+                };
+            } else {
+                this.modalConfig = {
+                    msg: 'Ya existe un contacto con ese DNI.',
+                    title: ErrorMessages.exist,
+                };
+            }
         }
         this.modalRef = this.modalService.open(this.modalContainer, { centered: true });
     }

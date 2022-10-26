@@ -1,6 +1,8 @@
+import { SafeHtml } from '@angular/platform-browser';
+
 export interface MConfig {
     title: string;
-    msg: string;
+    msg: string | SafeHtml;
     close?: MConfigButton;
     confirm?: MConfigButton;
 }

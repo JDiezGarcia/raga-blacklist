@@ -35,3 +35,20 @@ export interface ContactParams extends Partial<Contact>{
     offset: number,
     limit: number,
 }
+export interface ContactFields {
+    email: 'Email:',
+    name: 'Nombre:',
+    lastName: 'Apellidos:',
+    dni: 'DNI:',
+    phone: 'Telefono:',
+    expelled: 'No deseado:',
+}
+
+export const ContactFieldsObj : ContactFields = {
+    email: 'Email:',
+    name: 'Nombre:',
+    lastName: 'Apellidos:',
+    dni: 'DNI:',
+    phone: 'Telefono:',
+    expelled: 'No deseado:',
+}

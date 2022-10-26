@@ -24,7 +24,7 @@ export class ContactService {
   }
 
   create(contact: Contact) {
-      return this.apiService.patch<OkResponse, Contact>('contact', contact);
+      return this.apiService.post<OkResponse, Contact>('contact', contact);
   }
 
   update(id: number, contact: Contact): Observable<OkResponse> {

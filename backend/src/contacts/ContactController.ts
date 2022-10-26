@@ -79,6 +79,15 @@ class ContactController {
             res.status(404).send({ success: "Contact not found"});
             return;
         }
+
+        if(req.body.dni !== contact.dni) {
+            let exist = await contactRepository.findOneBy({dni: req.body.dni});
+            if(exist){
+                res.status(409).send({ error: {exist: "Dni already exists" }});
+                return;
+            }
+        }
+
         Object.keys(req.body).forEach(key => {
             contact[key] = req.body[key];
         });
@@ -109,33 +118,7 @@ class ContactController {
         }
         res.status(200).send({ success: 'Successfuly delete contact!'});
     };
-
-    static changeExpelled = async (req: Request, res: Response) => {
-        const id = Number(req.params.id);
-        const expelled = req.body.expelled;
-        const contactRepository = AppDataSource.getRepository(Contact);
-        let contact: Contact;
-        try {
-            contact = await contactRepository.findOneByOrFail({id});
-        } catch (error) {
-            res.status(404).send({error:"Contact not found"});
-            return;
-        }
-        let errors: TypeResponseErrors<Contact> = {};
-        const validateErrors = await validate(contact);
-        errors.validators = await ErrorHelper.getValidatorErrors(validateErrors);
-        if (Object.keys(errors.validators).length > 0) {
-            res.status(400).send(errors);
-            return;
-        }
-        try {
-            await contactRepository.save(contact);
-        } catch (e) {
-            res.status(409).send(e);
-            return;
-        }
-        res.status(200).send({ success: 'Successfuly change expelled to ' + expelled});
-    }
+    
 };
 
 export default ContactController;

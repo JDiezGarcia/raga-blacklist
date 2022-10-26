@@ -1,5 +1,4 @@
 import { FileSaverService } from 'ngx-filesaver';
-import { saveAs } from 'file-saver';
 import { MConfig } from './../shared/modal/models/modal.model';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -90,10 +89,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     downloadFile(){
-        // this.utils.download().subscribe((data:Blob | MediaSource)=> {
-        //     let downloadURL = window.URL.createObjectURL(data);
-        //     saveAs(downloadURL);
-        // })
         this.utils.download().pipe(takeWhile(() => !!this.isComponentActive)).subscribe({
             next: (sql) => {
                 this.fs.save(sql, 'raga-blacklist.sqlite');

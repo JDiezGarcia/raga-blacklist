@@ -4,12 +4,12 @@
             <button class=" m-1 col-lg-2 col-12 btn bg-dark text-white" [routerLink]="'contacts/create'">
                 <i class="fa-solid fa-user text-white"></i> Crear contacto
             </button>
-            <button class="m-1 col-lg-2 col-12 btn bg-dark text-white" (click)="downloadFile()">
+            <button class="m-1 col-lg-1 col-12 btn btn-sm bg-dark text-white" (click)="downloadFile()">
                 <i class="fa-solid fa-download text-white"></i> Descargar
             </button>
 
             <input hidden type="file" id="last-name" (change)="uploadFile($event)" #file>
-            <button class="m-1 col-lg-2 col-12 btn bg-dark text-white" (click)="file.click()">
+            <button class="m-1 col-lg-1 col-12 btn btn-sm bg-dark text-white" (click)="file.click()">
                 <i class="fa-solid fa-upload text-white"></i> Subir
             </button>
         </div>

@@ -1,3 +1,18 @@
-<p>
-  contacts works!
-</p>
+<div class="home mt-5">
+    <div class="container page">
+        <div class="row mb-3">
+            <button class="col-lg-1 col-12 btn bg-dark text-white" [routerLink]="'/'">
+                <i class="fa-solid fa-arrow-circle-left text-white"></i> Volver
+            </button>
+        </div>
+        <div class="row mb-5">
+            <h2 class="title">Creacion de contacto:</h2>
+            <app-form-contact class="mt-3" [config]="formConfig"
+                (isSuccess)="isSuccess($event)">
+            </app-form-contact>
+        </div>
+        <ng-template #modal>
+            <app-modal [config]="modalConfig" (close)="closeModal()"></app-modal>
+        </ng-template>
+    </div>
+</div>
