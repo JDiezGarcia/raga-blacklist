@@ -4,7 +4,7 @@ import { Log } from "./logs/LogEntity";
 
 export const AppDataSource = new DataSource({
     type: "sqlite",
-    database: "src/db/raga-blacklist.sqlite",
+    database: __dirname + '/db/raga-blacklist.sqlite',
     synchronize: true,
     logging: false,
     entities: [

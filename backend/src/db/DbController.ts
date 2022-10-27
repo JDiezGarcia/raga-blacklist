@@ -9,7 +9,7 @@ class DbController {
             return;
         } 
         const sqlFile = req.files.sql as UploadedFile;
-        const uploadPath = 'src/db/raga-blacklist.sqlite';
+        const uploadPath = __dirname + '/db/raga-blacklist.sqlite';
         sqlFile.mv(uploadPath, function (err) {
             if (err) {
                 res.status(404).send({error: {upload: 'Error uploading file'}});
@@ -20,7 +20,7 @@ class DbController {
     };
 
     static downloadDb = async (req: Request, res: Response) => {
-        const sqlPath = __dirname + '/raga-blacklist.sqlite';
+        const sqlPath = __dirname + '/db/raga-blacklist.sqlite';
         res.status(200).download(sqlPath, (err) => {
             if(err){
                 res.status(404).send({error: {download: 'Error downloading file'}})

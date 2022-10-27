@@ -1,0 +1,20 @@
+{
+  "name": "raga-blacklist",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main",
+    "build-b": "cd ../backend/ && npm install && npm run build && mv ./build ../electron/raga-blacklist/ && cp -r ./node_modules ../electron/raga-blacklist/",
+    "build-f": "cd ../frontend/ && npm run build && mv ./dist ../electron/raga-blacklist/build/",
+    "build-app": "rm -rf ./raga-blacklist/ && mkdir raga-blacklist && npm run build-b && npm run build-f",
+    "win32": "rm -rf ./raga-blacklist-win32-x32/ && electron-packager . raga-blacklist --platform=win32 --arch=ia32",
+    "win64": "rm -rf ./raga-blacklist-win32-x64/ && electron-packager . raga-blacklist --platform=win32 --arch=x64",
+    "linux32": "rm -rf ./raga-blacklist-linux-x32/ && electron-packager . raga-blacklist --platform=linux --arch=ia32",
+    "linux64": "rm -rf ./raga-blacklist-linux-x64/ && electron-packager . raga-blacklist --platform=linux --arch=x64",
+    "osx": "rm -rf ./raga-blacklist-osx/ && electron-packager . raga-blacklist --platform=darwin --arch=x64"
+  },
+  "dependencies": {
+    "electron": "^21.2.0",
+    "electron-packager": "^17.0.0"
+  }
+}

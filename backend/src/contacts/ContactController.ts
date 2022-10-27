@@ -52,11 +52,13 @@ class ContactController {
             return;
         }
         const contactRepository = AppDataSource.getRepository(Contact);
-        const exists = await contactRepository.findOne({where:{dni: req.body.dni}});
-        if (exists) {
-            errors.exist = ErrorType.Exist;
-            res.status(404).send({errors: errors})
-            return;
+        if (req.body.dni) {
+            const exists = await contactRepository.findOne({ where: { dni: req.body.dni } });
+            if (exists) {
+                errors.exist = ErrorType.Exist;
+                res.status(404).send({ errors: errors })
+                return;
+            }
         }
         try {
             await contactRepository.save(contact)
